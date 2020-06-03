@@ -1,0 +1,31 @@
+#spring.cloud.loadbalancer.ribbon.enabled
+spring:
+  cloud:
+    #loadbalancer:
+    #  ribbon:
+    #    enabled: false
+    gateway:
+      x-forwarded:
+        for-append: false
+        host-append: false
+        port-append: false
+        proto-append: false
+        prefix-append: false
+      discovery:
+        locator:
+          enabled: true
+          predicates:
+            - name: Path
+              args:
+                pattern: "'/'+serviceId+'/**'"
+            - name: Host
+              args:
+                pattern: "'**.foo.com'"
+          filters:
+            - name: Hystrix
+              args:
+                name: serviceId
+            - name: RewritePath
+              args:
+                regexp: "'/' + serviceId + '/(?<remaining>.*)'"
+                replacement: "'/${remaining}'"
